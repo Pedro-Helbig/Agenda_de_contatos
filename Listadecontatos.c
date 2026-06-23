@@ -37,6 +37,11 @@ int main()
         {
         case 1:
         {
+            if (i >= 20)
+            {
+                printf("Limite de contatos atingido.\n");
+                break;
+            }
             c[i] = adicionar_novo();
             i++; // incrementa i após salvar o contato
             printf("Contato criado com sucesso\n");
