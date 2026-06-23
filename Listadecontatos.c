@@ -8,6 +8,7 @@ typedef struct
     char nome[20];
 } contato; // estrutura que define um contato, com id sempre. O id deve auto acrementar quando se criar um novo contato
 int i = 0;
+char lixochar;
 contato adicionar_novo(); // prototipo sem parametro da função de adcionar novos membros
 void listar_contato(contato c);
 contato *buscar_contato(contato c[], int tamanho); // retorna ponteiro (NULL se não achar)
@@ -15,7 +16,7 @@ void str_lower(const char *src, char *dest, int max);
 
 int main()
 {
-    int e;
+    int e = 0;
     contato c[20];
 
     while (1)
@@ -26,7 +27,11 @@ int main()
         printf("3-Alterar um contato que ja exista\n");
         printf("4-Listar todos os contatos\n");
         printf("5-Buscar um contato\n");
-        scanf("%d", &e);
+        while (scanf("%d", &e) != 1) // evita que seja valores invalidos
+        {
+            while ((lixochar = getchar()) != '\n' && lixochar != EOF)
+                ;
+        }
 
         switch (e)
         {
@@ -35,6 +40,36 @@ int main()
             c[i] = adicionar_novo();
             i++; // incrementa i após salvar o contato
             printf("Contato criado com sucesso\n");
+            break;
+        }
+        case 2:
+        {
+            if (i == 0)
+            {
+                printf("Nenhum contato cadastrado.\n");
+                break;
+            }
+            contato *encontrado = buscar_contato(c, i);
+            if (encontrado == NULL)
+            {
+                printf("Contato nao encontrado.\n");
+                break;
+            }
+            printf("Contato encontrado:\n");
+            listar_contato(*encontrado);
+
+            // calcula o índice do contato no array pela aritmética de ponteiros
+            int idx = encontrado - c;
+            // desloca os elementos seguintes para preencher o buraco
+            for (int j = idx; j < i - 1; j++)
+            {
+                c[j] = c[j + 1];
+            }
+            i--;
+            // reindexar IDs para manter sequência contínua
+            for (int j = idx; j < i; j++)
+                c[j].id = j + 1;
+            printf("Contato excluido com sucesso.\n");
             break;
         }
         case 3:
@@ -55,7 +90,11 @@ int main()
             printf("Contato encontrado.\n");
             listar_contato(*encontrado);
             printf("1-Alterar nome\n2-Alterar numero\n 3-Alterar nome e numero");
-            scanf("%d", &es);
+            while (scanf("%d", &es) != 1) // evita que seja valores invalidos
+            {
+                while ((lixochar = getchar()) != '\n' && lixochar != EOF)
+                    ;
+            }
             if (es == 1)
             {
                 printf("Novo nome: ");
@@ -122,8 +161,10 @@ contato adicionar_novo()
     scanf(" %19[^\n]", c.nome); // faz o scanf ler até o enter
 
     printf("Digite o numero: ");
-    if (scanf("%d", &c.numero) != 1)
+    while (scanf("%d", &c.numero) != 1)
     {
+        while ((lixochar = getchar()) != '\n' && lixochar != EOF)
+            ;
         printf("Erro ao ler numero\n");
     }
     c.id = 1 + i; // autoincremento do id
@@ -191,7 +232,6 @@ contato *buscar_contato(contato c[], int tamanho)
     }
     return NULL; // não encontrou
 }
-
 void str_lower(const char *src, char *dest, int max)
 { // Converte string para minúsculas padronizando a pesquisa
     int j = 0;
