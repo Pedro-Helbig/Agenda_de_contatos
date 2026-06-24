@@ -27,6 +27,7 @@ int main()
         printf("3-Alterar um contato que ja exista\n");
         printf("4-Listar todos os contatos\n");
         printf("5-Buscar um contato\n");
+        printf("6-Sair\n");
         while (scanf("%d", &e) != 1) // evita que seja valores invalidos
         {
             while ((lixochar = getchar()) != '\n' && lixochar != EOF)
@@ -152,7 +153,13 @@ int main()
             }
             break;
         }
+        case 6:
+        {
+            printf("Programa Encerrado.\n");
+            return 0;
+        }
         default:
+            printf("Opcao invalida, digite de 1 a 6.\n");
             break;
         }
     }
