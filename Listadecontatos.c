@@ -4,7 +4,7 @@
 typedef struct
 {
     int id;
-    int numero;
+    char numero[20];   //Numero como char permite 0 no comeco, ddd,
     char nome[20];
 } contato; // estrutura que define um contato, com id sempre. O id deve auto acrementar quando se criar um novo contato
 int i = 0;
@@ -13,6 +13,7 @@ contato adicionar_novo(); // prototipo sem parametro da função de adcionar nov
 void listar_contato(contato c);
 contato *buscar_contato(contato c[], int tamanho); // retorna ponteiro (NULL se não achar)
 void str_lower(const char *src, char *dest, int max);
+void limpar_buffer(); //  limpa a linha dps do scanf
 
 int main()
 {
@@ -32,7 +33,10 @@ int main()
         {
             while ((lixochar = getchar()) != '\n' && lixochar != EOF)
                 ;
+        printf("Opcao invalida. Digite um numero.\n"); // Mostra mensagem de erro
+
         }
+        limpar_buffer();
 
         switch (e)
         {
@@ -101,22 +105,32 @@ int main()
                 while ((lixochar = getchar()) != '\n' && lixochar != EOF)
                     ;
             }
+            limpar_buffer();
             if (es == 1)
             {
                 printf("Novo nome: ");
                 scanf(" %19[^\n]", encontrado->nome);
+                limpar_buffer();
             }
             else if (es == 2)
             {
                 printf("Novo numero: ");
-                scanf("%d", &encontrado->numero);
+                scanf(" %19[^\n]", &encontrado->numero);
+                limpar_buffer();
             }
             else if (es == 3)
             {
                 printf("Novo nome: ");
                 scanf(" %19[^\n]", encontrado->nome);
+                limpar_buffer();
                 printf("Novo numero: ");
-                scanf("%d", &encontrado->numero);
+                scanf(" %19[^\n", &encontrado->numero);
+                limpar_buffer();
+            }
+            else 
+            {
+             printf("Opcao invalida. Nada foi alterado.\n");
+                break;
             }
             printf("Contato alterado com sucesso!\n");
             break;
@@ -171,14 +185,16 @@ contato adicionar_novo()
 
     printf("Digite o nome: ");
     scanf(" %19[^\n]", c.nome); // faz o scanf ler até o enter
+    limpar_buffer();
 
     printf("Digite o numero: ");
-    while (scanf("%d", &c.numero) != 1)
+    while (scanf(" %19[^\n]", &c.numero) != 1)
     {
         while ((lixochar = getchar()) != '\n' && lixochar != EOF)
             ;
         printf("Erro ao ler numero\n");
     }
+    limpar_buffer();
     c.id = 1 + i; // autoincremento do id
 
     return c;
@@ -189,22 +205,24 @@ void listar_contato(contato c)
     printf("Dados do contato\n");
     printf("ID: %d\n", c.id);
     printf("Nome: %s\n", c.nome);
-    printf("Numero: %d\n", c.numero);
+    printf("Numero: %s\n", c.numero);
 }
 
 contato *buscar_contato(contato c[], int tamanho)
 {
-    int opcao, id_busca, numero_busca;
-    char nome_busca[20], nome_lower[20], c_nome_lower[20];
+    int opcao, id_busca;
+    char nome_busca[20], nome_lower[20], c_nome_lower[20], numero_busca[20];
     printf("Buscar por:\n");
     printf("1-Nome\n");
     printf("2-ID\n");
     printf("3-Numero\n");
     scanf("%d", &opcao);
+    limpar_buffer();
     if (opcao == 1)
     {
         printf("Digite o nome (ou parte dele): ");
         scanf(" %19[^\n]", nome_busca);
+        limpar_buffer();
         str_lower(nome_busca, nome_lower, 20);
 
         for (int j = 0; j < tamanho; j++)
@@ -220,6 +238,7 @@ contato *buscar_contato(contato c[], int tamanho)
     {
         printf("Digite o ID: ");
         scanf("%d", &id_busca);
+        limpar_buffer();
 
         for (int j = 0; j < tamanho; j++)
         {
@@ -232,7 +251,8 @@ contato *buscar_contato(contato c[], int tamanho)
     else if (opcao == 3)
     {
         printf("Digite o numero: ");
-        scanf("%d", &numero_busca);
+        scanf(" %19[^\n]", &numero_busca);
+        limpar_buffer();
 
         for (int j = 0; j < tamanho; j++)
         {
@@ -253,4 +273,10 @@ void str_lower(const char *src, char *dest, int max)
         j++;
     }
     dest[j] = '\0';
+}
+
+void limpar_buffer()
+{ 
+    while ((lixochar = getchar()) != '\n' && lixochar != EOF)
+        ;
 }
