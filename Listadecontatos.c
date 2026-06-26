@@ -124,7 +124,7 @@ int main()
                 scanf(" %19[^\n]", encontrado->nome);
                 limpar_buffer();
                 printf("Novo numero: ");
-                scanf(" %19[^\n", &encontrado->numero);
+                scanf(" %19[^\n]", &encontrado->numero);
                 limpar_buffer();
             }
             else 
