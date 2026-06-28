@@ -1,19 +1,24 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h> 
+
 typedef struct
 {
     int id;
     char numero[20];   //Numero como char permite 0 no comeco, ddd,
     char nome[20];
+    char tipo[10];
 } contato; // estrutura que define um contato, com id sempre. O id deve auto acrementar quando se criar um novo contato
 int i = 0;
 char lixochar;
 contato adicionar_novo(); // prototipo sem parametro da função de adcionar novos membros
 void listar_contato(contato c);
 contato *buscar_contato(contato c[], int tamanho); // retorna ponteiro (NULL se não achar)
+void ler_tipo(char tipo[]);
 void str_lower(const char *src, char *dest, int max);
 void limpar_buffer(); //  limpa a linha dps do scanf
+void limpar_tela();  // Limpa a tela, deixando visual mais clean
 
 int main()
 {
@@ -37,6 +42,7 @@ int main()
 
         }
         limpar_buffer();
+        limpar_tela();
 
         switch (e)
         {
@@ -99,7 +105,7 @@ int main()
 
             printf("Contato encontrado.\n");
             listar_contato(*encontrado);
-            printf("1-Alterar nome\n2-Alterar numero\n 3-Alterar nome e numero");
+            printf("1-Alterar nome\n2-Alterar numero\n3-Alterar nome e numero\n4-Alterar tipo\n");
             while (scanf("%d", &es) != 1) // evita que seja valores invalidos
             {
                 while ((lixochar = getchar()) != '\n' && lixochar != EOF)
@@ -115,7 +121,7 @@ int main()
             else if (es == 2)
             {
                 printf("Novo numero: ");
-                scanf(" %19[^\n]", &encontrado->numero);
+                scanf(" %19[^\n]", encontrado->numero);
                 limpar_buffer();
             }
             else if (es == 3)
@@ -124,8 +130,12 @@ int main()
                 scanf(" %19[^\n]", encontrado->nome);
                 limpar_buffer();
                 printf("Novo numero: ");
-                scanf(" %19[^\n]", &encontrado->numero);
+                scanf(" %19[^\n]", encontrado->numero);
                 limpar_buffer();
+            }
+            else if (es == 4)
+            {
+                ler_tipo(encontrado->tipo);
             }
             else 
             {
@@ -188,13 +198,15 @@ contato adicionar_novo()
     limpar_buffer();
 
     printf("Digite o numero: ");
-    while (scanf(" %19[^\n]", &c.numero) != 1)
+    while (scanf(" %19[^\n]", c.numero) != 1)
     {
         while ((lixochar = getchar()) != '\n' && lixochar != EOF)
             ;
         printf("Erro ao ler numero\n");
     }
     limpar_buffer();
+
+    ler_tipo(c.tipo);
     c.id = 1 + i; // autoincremento do id
 
     return c;
@@ -206,6 +218,7 @@ void listar_contato(contato c)
     printf("ID: %d\n", c.id);
     printf("Nome: %s\n", c.nome);
     printf("Numero: %s\n", c.numero);
+    printf("Tipo: %s\n", c.tipo);
 }
 
 contato *buscar_contato(contato c[], int tamanho)
@@ -251,12 +264,12 @@ contato *buscar_contato(contato c[], int tamanho)
     else if (opcao == 3)
     {
         printf("Digite o numero: ");
-        scanf(" %19[^\n]", &numero_busca);
+        scanf(" %19[^\n]", numero_busca);
         limpar_buffer();
 
         for (int j = 0; j < tamanho; j++)
         {
-            if (c[j].numero == numero_busca)
+            if (strcmp(c[j].numero, numero_busca) == 0)
             {
                 return &c[j];
             }
@@ -264,6 +277,44 @@ contato *buscar_contato(contato c[], int tamanho)
     }
     return NULL; // não encontrou
 }
+
+void ler_tipo(char tipo[])
+{
+    int opcao_tipo;
+
+    while (1)
+    {
+        printf("Tipo do contato:\n");
+        printf("1-Pessoal\n");
+        printf("2-Trabalho\n");
+        printf("Escolha uma opcao: ");
+
+        if (scanf("%d", &opcao_tipo) != 1)
+        {
+            while ((lixochar = getchar()) != '\n' && lixochar != EOF)
+                ;
+            printf("Opcao invalida. Digite um numero.\n");
+            continue;
+        }
+        limpar_buffer();
+
+        if (opcao_tipo == 1)
+        {
+            strcpy(tipo, "pessoal");
+            break;
+        }
+        else if (opcao_tipo == 2)
+        {
+            strcpy(tipo, "trabalho");
+            break;
+        }
+        else
+        {
+            printf("Opcao invalida. Digite 1 para pessoal ou 2 para trabalho.\n");
+        }
+    }
+}
+
 void str_lower(const char *src, char *dest, int max)
 { // Converte string para minúsculas padronizando a pesquisa
     int j = 0;
@@ -279,4 +330,11 @@ void limpar_buffer()
 { 
     while ((lixochar = getchar()) != '\n' && lixochar != EOF)
         ;
+
+    
 }
+
+void limpar_tela()
+{
+     system("cls || clear"); //Limpa a tela em windows e linux, melhorando experiência do usuario
+}  
